@@ -5,12 +5,10 @@ import com.tcs.exchange.dto.ExchangeResponse;
 import com.tcs.exchange.model.ExchangeRate;
 import com.tcs.exchange.service.ExchangeService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/v1/exchange")
 public class ExchangeController {
 
@@ -30,6 +28,18 @@ public class ExchangeController {
         exchangeResponse.setMonedaOrigen(exchangeRate.getCurrencyFrom());
         exchangeResponse.setMonedaDestino(exchangeRate.getCurrencyTo());
         return ResponseEntity.ok(exchangeResponse);
+    }
+    @PostMapping("update")
+    public ResponseEntity<Void> updateExchangeRate(
+            @RequestParam String currencyFrom,
+            @RequestParam String currencyTo,
+            @RequestParam double exchangeRate) {
+        try {
+            exchangeService.updateExchangeRate(currencyFrom, currencyTo, exchangeRate);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }
